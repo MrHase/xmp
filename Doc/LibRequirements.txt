@@ -1,0 +1,36 @@
+All libraries should look like this:
+
+Classname: XmpConnector
+(If you use a non OO programming language, create a struct with this name which stores all needed variables like the socket, clientname etc)
+
+Methodes:
+
+Register( name:string ), return: void
+	We register the client on the server
+Send( receiver:string, msg:string ), return: void
+	We send a normal message
+Request( receiver:string, msg:string ), return: void
+	We send a message and wait for the reply(blocks)
+Reply( receiver:string, msgid:string, msg:string ), return: void
+	We reply to a request. 
+Count( ), return: in
+	Count returns the number of messages on the server
+Disconnect( ), return: void
+	Disconnect from the server
+Receive( ), return: void
+	We Receive a message from the server
+-----------------------------------------
+The following methodes are special. They dont interact with the server but
+read the last received message(Receive or Request) and get the needed
+informations to the user.
+
+GetType( ), return: string
+	Get the message type
+GetSender( ), return: string
+	Get the sender
+GetMsg( ), return: string
+	Get the raw! message
+GetMsgID( ), return: string
+	Get the ID of the message
+GetData( ), return: string
+	Get the message

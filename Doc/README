@@ -1,0 +1,23 @@
+#############################################
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+############################################
+
+INSTALL:
+	Just type:
+	
+    cmake .
+	make
+	
+	Afterwards we should have an executable named xmpd.
+	This is the server. We must start them before we
+	can run the examples or our own programs.
+  
