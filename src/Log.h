@@ -24,6 +24,7 @@ class SetScope_{
 };
 #define SetScope(scopeclass,scopemethod) SetScope_ justarandomvariablename(scopeclass,scopemethod);
 
+//static void SetScope(std::string c,std::string m){}
 
 void LOG(std::string text,LogType type=NOTE);
 void LogMode(LogModes mode);

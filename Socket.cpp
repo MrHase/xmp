@@ -7,8 +7,10 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <iostream>
-//#include <cstdint>
 
+#include <errno.h>
+//#include <cstdint>
+using namespace std;
 
 
 Socket::Socket() :
@@ -118,7 +120,7 @@ bool Socket::send ( const std::string& s, const bool fastmode ) const
 
   
 	
- 	unsigned long length=s.length();
+    uint32_t length=s.length();
   	//printf("senden laenge: %x\n",length);
   	//std::cout <<"senden laenge: "<<length<<std::endl;
 	std::string msg=s;
@@ -162,7 +164,7 @@ int Socket::recv ( std::string& s ) const
 	char buf [ MAXRECV + 1 ];
 	unsigned char size[4];
 	char recv_char[1];
-	unsigned long length=0;
+    uint32_t length=0;
 	s = "";
 	size[0]=0;
 	size[1]=0;
@@ -170,7 +172,7 @@ int Socket::recv ( std::string& s ) const
 	size[3]=0;
 	memset ( buf, 0, MAXRECV + 1 );
 	
-	int status=::recv(m_sock,size,4,0);//recv the first 4 bytes to get the length
+    int32_t status=::recv(m_sock,size,4,0);//recv the first 4 bytes to get the length
 	if(status==0 or status==-1) return 0;
   	//printf("empfangen size: %x %x %x %x\n",size[0],size[1],size[2],size[3]);
   	//printf("empfangen long: %l\n",size);
@@ -206,10 +208,40 @@ int Socket::recv ( std::string& s ) const
 				}
   		}while(recv_char[0]!='\0');
 		// we must remove the last char!!! cause its a \0 now which was never send!  		
-  	}else{
-	//! ist still slow cause wie use a loop here
-	//! we should receive the data with ::recv(m_sock,buf,lenght,?) but i get an error then
-		for (int i=0;i<length;i++){
+    }else{
+
+
+        /*
+        char buffer[10000]; //! define!
+        uint32_t remaining=length;
+        uint32_t received=0;
+        while(received!=length){
+
+            status = ::recv ( m_sock, buf, remaining, 0 );
+
+
+            if(status<0){
+                string error=strerror(errno);//! fehlerbehandlung
+                std::cout<<"Status: "<<status<<" Error: "<<error<<std::endl;
+                exit(1);
+            }
+
+            const uint32_t recv_length=status;
+
+
+
+            memcpy(buffer+received,buf,recv_length);
+
+            remaining-=recv_length;
+            received+=recv_length;
+
+        }
+        string recvstring(buffer);
+        s=recvstring;
+        */
+
+
+        for (int i=0;i<length;i++){
 			status = ::recv ( m_sock, recv_char, 1, 0 );
 			//status = ::recv ( m_sock, buf, length, 0 );
 			
@@ -220,17 +252,16 @@ int Socket::recv ( std::string& s ) const
 			}else if ( status == 0 ){
 				return 0;
 			}else{
-				/*for (int i=0;i<length;i++){
-					s+=buf[i];
-				}
-				* */
+
 				s+=recv_char;
 				
 			}
 			//std::cout<<"status: " <<status<< "i: "<<i<<" recv_char: "<<recv_char[0]<<std::endl;
 		}
+
 	}
 	//std::cout<<"status: "<<status<<std::endl;
+
 	return status;
 }
 

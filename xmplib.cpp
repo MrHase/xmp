@@ -126,7 +126,7 @@ XmpConnector::XmpConnector( std::string host, int port )
 	Socket& socket= (* (Socket*)socket_prt);
 	lastmessage="";
 	randomcounter=0;
-	serverreply_=true;
+    serverreply_=false;
 	if ( ! socket.create() )
 	{
 		throw Exception ( "Could not create client socket." );

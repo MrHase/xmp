@@ -12,6 +12,7 @@
 #include <string>
 #include <arpa/inet.h>
 
+#include "SocketException.h"
 
 const int MAXHOSTNAME = 200;
 const int MAXCONNECTIONS = 5;

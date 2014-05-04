@@ -128,7 +128,7 @@ class Client{
 		Socket* socket;
 		std::string name;
 		int waiting_for_reply;
-		unsigned int replyid;
+        unsigned int replyid;
 		bool waiting_for_message;
 		
 };
@@ -174,35 +174,12 @@ private:
 	std::string GetName(const int id);
 	std::string GetApp(const int id);
 	std::string GetSender(const int id);
-	template<class T>
-	int AddElement( ticpp::Element* pElem,const std::string& name,const T& text){
-		if(pElem!=NULL){
-			//!-------buggi xml
-			pthread_mutex_lock(&buggixmlmutex);
-			if(buggixmlelement.size()>9){
-				delete (buggixmlelement.front());
-				buggixmlelement.pop();
-				
-			}
-			if(buggixmltext.size()>9){
-				delete (buggixmltext.front());
-				buggixmltext.pop();
-			}
-			//!--------------
-			ticpp::Element* element=new ticpp::Element(name);
-			ticpp::Text* elementtext=new ticpp::Text(text);
-			element->LinkEndChild(elementtext);
-			pElem->LinkEndChild(element);
-			
-			//!-------buggi xml
-			buggixmlelement.push(element);
-			buggixmltext.push(elementtext);
-			pthread_mutex_unlock(&buggixmlmutex);
-			//!--------------
-		}else throw ticpp::Exception("AddElement: pElem==NULL \n");
-		return 0;
-		
-	}
+
+    int AddElement( ticpp::Element* pElem,const std::string name,const int text){
+        AddElement(pElem,name,std::to_string(text));
+    }
+
+    int AddElement( ticpp::Element* pElem,const std::string name,const std::string text);
 	unsigned int GetMsgID(const ticpp::Element* const pElem)const;
 	unsigned int GetReplyID(const ticpp::Element* const pElem)const;
 	std::string GetSender(const ticpp::Element* pElem);
@@ -211,12 +188,7 @@ private:
 	ticpp::Element* FindElement(const ticpp::Element* pElem,const std::string& name)const;
 	std::map<int,Socket*>* GetSocketMap();
 	
-	
-	//! just because xml is buggi!
-	std::queue<ticpp::Element*> buggixmlelement;
-	std::queue<ticpp::Text*> buggixmltext;	
-	pthread_mutex_t buggixmlmutex;
-	//!-------------	
+
 	Socket socket;
 	std::map<int,Socket*> socketmap;
 	int port_;

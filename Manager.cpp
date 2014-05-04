@@ -1,13 +1,20 @@
 #include "Manager.h"
+
+#include <iostream>
+#include <string>
+
 #define TIXML_USE_STL
 #define TIXML_USE_TICPP
 #define STR(str) std::string(str)
+
+using namespace std;
+
 Manager::Manager(int port){
 	SetScope("Manager","Manager");
 	
 	port_=port;
-	//buggixmlmutex= PTHREAD_MUTEX_INITIALIZER ;
-	pthread_mutex_init(&buggixmlmutex,NULL);
+
+
 	id_=0;
 	pthread_t thread;
 	int threadid;
@@ -75,8 +82,9 @@ int Manager::run(){
 			Log(errormsg);
 		}catch(ManagerException& me){
 			std::string errormsg=msg;
-			AddError(errormsg,me.GetError());
-			Log(errormsg);
+            AddError(errormsg,me.GetError());
+            //cout<<"Error: "<<me.GetError()<<endl;
+            Log(errormsg);
 		}	
 	}//while(true)
 
@@ -106,8 +114,8 @@ int Manager::Incomming(const int id, const std::string& msg){
 	
 		if(ElementExist(pElem,"ThreadID"))throw ManagerException("Manager - Incomming: ThreadID already exist");
 		if(ElementExist(pElem,"MsgID"))throw ManagerException("Manager - Incomming: MsgID already exist");
-		AddElement(pElem,"ThreadID",id);			//add the ThreadID
-		AddElement(pElem,"MsgID",IDgenerator());	//add the MsgID
+        AddElement(pElem,"ThreadID",to_string(id));			//add the ThreadID
+        AddElement(pElem,"MsgID",to_string(IDgenerator()));	//add the MsgID
 
 		newmsg=doc.ToString(doc);
 				
@@ -606,8 +614,22 @@ std::string Manager::GetApp(const int id){
 }
 std::string Manager::GetSender(const int id){
 	SetScope("Manager","GetSender");
-	return GetName(id);	
+    return GetName(id);
 }
+
+int Manager::AddElement(ticpp::Element *pElem, const string name, const string text)
+{
+    if(pElem!=NULL){
+        ticpp::Element element(name);
+        ticpp::Text elementtext(text);
+
+        element.InsertEndChild(elementtext);
+        pElem->InsertEndChild(element);
+
+    }else throw ticpp::Exception("AddElement: pElem==NULL \n");
+    return 0;
+}
+
 bool Manager::ClientRegistered(const int id){
 	SetScope("Manager","ClientRegistered");
 	if(GetName(id).compare("")==0)
@@ -615,6 +637,7 @@ bool Manager::ClientRegistered(const int id){
 	else
 		return true;
 }
+
 bool Manager::ClientRegistered(const ticpp::Element* const pElem){
 	SetScope("Manager","ClientRegistered");
 	std::string app="";
@@ -674,8 +697,8 @@ bool Manager::ElementExist(const ticpp::Element* pElem,const std::string& name)c
 }
 ticpp::Element* Manager::FindElement(const ticpp::Element* pElem,const std::string& name)const {
 	SetScope("Manager","FindElement");
-	ticpp::Iterator<ticpp::Element> child;
-	for (child=child.begin(pElem);child!=child.end();child++){
+
+    for (ticpp::Iterator<ticpp::Element> child=child.begin(pElem);child!=child.end();child++){
 		if(child.Get()->Value().compare(name)==0)return child.Get(); 	
 	}
 	return NULL;
@@ -684,9 +707,10 @@ int main(){
 	LogMode(LOG_SHOW_NOTES);
 	SetScope("","Main");
 	unsigned int port=30000;
+	
 	try{
 		Manager m(port);
-		LOG(STR("Start Server on Port ") +="port");
+		LOG(STR("Start Server on Port ") +=std::to_string(port));
 		m.run();
 	}catch(SocketException& e){
 		
