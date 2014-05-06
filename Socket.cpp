@@ -176,7 +176,7 @@ int Socket::recv ( std::string& s ) const
 	if(status==0 or status==-1) return 0;
   	//printf("empfangen size: %x %x %x %x\n",size[0],size[1],size[2],size[3]);
   	//printf("empfangen long: %l\n",size);
-	unsigned long tmp_size=0;
+    uint32_t tmp_size=0;
 	tmp_size=size[0];
 	length+=tmp_size<<24;
 	tmp_size=size[1];

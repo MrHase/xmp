@@ -66,15 +66,15 @@ int Manager::run(){
 				if(attr.compare("yes")==0) sendreply=true;
 			}catch(ticpp::Exception& ex ){/*std::cout <<"no attributes!!!!!!!!"<<std::endl;*no attributes is not an error...*/}
 			
-			if(pElem->GetText().compare("register")==0)		Register(msg,sendreply);
-			if(pElem->GetText().compare("error")==0)		Error(msg,sendreply);
+            if(pElem->GetText()=="register")		Register(msg,sendreply);
+            if(pElem->GetText()=="error")		Error(msg,sendreply);
 			//!if(pElem->GetText().compare("broadcast")==0)	Register(msg,sendreply);//wie handlen wir da ein reply von jedem teilnehmer? da der client ja nicht weiß wie viele replys er abholen muss. die anzahl müsste also im server reply stehen
-			if(pElem->GetText().compare("count")==0)		Count(msg,sendreply);
-			if(pElem->GetText().compare("normal")==0)		Send(msg,sendreply);
-			if(pElem->GetText().compare("request")==0)		Request(msg,sendreply);
-			if(pElem->GetText().compare("disconnect")==0)	Disconnect(msg,sendreply);//hier gibt es Probleme beim Loggen wenn der Client schon gelöscht ist, kann im Log nciht mehr die App rausgefunden werden... daher muss es vorher geloggt werden
-			if(pElem->GetText().compare("reply")==0)		Reply(msg,sendreply);							
-			if(pElem->GetText().compare("receive")==0)		Receive(msg,sendreply);
+            if(pElem->GetText()=="count")		Count(msg,sendreply);
+            if(pElem->GetText()=="normal")		Send(msg,sendreply);
+            if(pElem->GetText()=="request")		Request(msg,sendreply);
+            if(pElem->GetText()=="disconnect")	Disconnect(msg,sendreply);//hier gibt es Probleme beim Loggen wenn der Client schon gelöscht ist, kann im Log nciht mehr die App rausgefunden werden... daher muss es vorher geloggt werden
+            if(pElem->GetText()=="reply")		Reply(msg,sendreply);
+            if(pElem->GetText()=="receive")		Receive(msg,sendreply);
 			if(log)Log(msg);			
 		}catch(ticpp::Exception& ex ){
 			std::string errormsg=msg;
